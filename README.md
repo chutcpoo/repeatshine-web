@@ -20,3 +20,7 @@ This repository contains the Repeat Revenue Calculator landing page, SEO crawl f
 ## Deployment safety
 
 Do not change the production Vercel project or `calculator.repeatshine.com` alias until a preview deployment has been compared with the current production page and `/api/event` contract.
+
+## Git integration
+
+GitHub is the source of truth for the Vercel `repeatshine-calculator` project. Production changes must be verified on a preview before promotion.
