@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Mobile Detailing Repeat Revenue Calculator | RepeatShine</title>
+<meta name="description" content="Estimate how much repeat revenue your mobile detailing business may be leaving behind based on customer count, average ticket, repeat rate, and visit frequency.">
+<link rel="canonical" href="https://calculator.repeatshine.com/">
+<meta property="og:title" content="Free Mobile Detailing Repeat Revenue Calculator | RepeatShine">
+<meta property="og:description" content="Estimate your repeat-revenue opportunity and see how many past detailing customers may be worth rebooking.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://calculator.repeatshine.com/">
+<meta name="robots" content="index,follow">
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#202225;--muted:#667085;--line:#dfe3e8;--accent:#2f6fed;--good:#176b3a}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:880px;margin:0 auto;padding:32px 18px}.hero{text-align:center;margin-bottom:20px}.hero h1{font-size:32px;margin:0 0 10px}.hero p{color:var(--muted);margin:0 auto;max-width:650px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 2px 8px rgba(0,0,0,.04);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{display:block;font-size:13px;font-weight:650;margin-bottom:6px}
+input{width:100%;padding:12px;border:1px solid #cfd5dd;border-radius:9px;font-size:16px}
+button{width:100%;padding:13px;border:0;border-radius:9px;background:var(--accent);color:#fff;font-size:16px;font-weight:750;cursor:pointer;margin-top:16px}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:15px}.metric b{font-size:24px;display:block;margin-top:5px}.metric span{font-size:12px;color:var(--muted)}
+.cta{background:#202225;color:#fff}.cta p{color:#d1d5db}.small{font-size:12px;color:var(--muted);line-height:1.5}.hidden{display:none}
+@media(max-width:680px){.grid,.results{grid-template-columns:1fr}.hero h1{font-size:26px}}
+</style></head>
+<body><main>
+<section class="hero"><p style="font-weight:800;letter-spacing:.04em;color:#2563EB;margin:0 0 8px">REPEATSHINE</p><h1>How Much Repeat Revenue Is Slipping Away?</h1>
+<p>A simple estimate for mobile detailers. See the gap between your current repeat-customer rate and the rate you want to reach.</p></section>
+<section class="card">
+<div class="grid">
+<div><label>Past customers in the last 12 months</label><input id="customers" type="number" min="0" value="120"></div>
+<div><label>Average ticket ($)</label><input id="ticket" type="number" min="0" step="1" value="175"></div>
+<div><label>Current repeat-customer rate (%)</label><input id="current" type="number" min="0" max="100" step="1" value="25"></div>
+<div><label>Target repeat-customer rate (%)</label><input id="target" type="number" min="0" max="100" step="1" value="45"></div>
+<div><label>Average repeat visits per retained customer / year</label><input id="visits" type="number" min="1" step=".1" value="2"></div>
+<div><label>Months to view</label><input id="months" type="number" min="1" max="36" value="12"></div>
+</div>
+<button onclick="calc()">Calculate My Repeat-Revenue Gap</button>
+</section>
+<section id="out" class="card hidden">
+<h2>Your estimated opportunity</h2>
+<div class="results">
+<div class="metric"><span>Additional returning customers</span><b id="rCustomers">0</b></div>
+<div class="metric"><span>Estimated revenue opportunity</span><b id="rRevenue">$0</b></div>
+<div class="metric"><span>Average monthly opportunity</span><b id="rMonthly">$0</b></div>
+</div>
+<p class="small">This is a planning estimate, not a revenue forecast or guarantee. It assumes the gap between your current and target repeat-customer rates is achievable and uses the average ticket and repeat-visit inputs you provide.</p>
+</section>
+<section id="cta" class="card cta hidden">
+<h2>The number is useful. The action list is better.</h2>
+<p>The RepeatShine Repeat Revenue System is designed to show which customer vehicles are due, overdue, already rebooked, and what to do next—without building a giant CRM.</p>
+<p><b>Next step:</b> Use your result to prioritize who to contact first.</p><p><a id="productLink" href="https://repeatshine.com/products/repeatshine-repeat-revenue-system" style="display:inline-block;background:#fff;color:#202225;padding:12px 16px;border-radius:9px;text-decoration:none;font-weight:800">See the Repeat Revenue System</a></p>
+</section>
+</main>
+<script>
+function track(name,params){
+  params=params||{};
+  window.dataLayer=window.dataLayer||[];
+  window.dataLayer.push(Object.assign({event:name},params));
+  if(typeof window.fbq==='function'){window.fbq('trackCustom',name,params)}
+  const qs=new URLSearchParams(location.search);
+  const payload={event:name,page:location.pathname,referrer:document.referrer||'',utm_source:qs.get('utm_source')||'',utm_medium:qs.get('utm_medium')||'',utm_campaign:qs.get('utm_campaign')||'',utm_content:qs.get('utm_content')||'',utm_term:qs.get('utm_term')||'',data:params};
+  fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(function(){});
+}
+track('PageView',{page_type:'repeat_revenue_calculator'});
+let calcStarted=false;
+document.querySelectorAll('input').forEach(function(el){el.addEventListener('focus',function(){if(!calcStarted){calcStarted=true;track('CalculatorStarted')}})});
+const productLink=document.getElementById('productLink');
+if(productLink){
+  const qs=new URLSearchParams(location.search);
+  const keep=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+  const out=new URL(productLink.href);
+  keep.forEach(function(k){if(qs.get(k))out.searchParams.set(k,qs.get(k))});
+  productLink.href=out.toString();
+  productLink.addEventListener('click',function(){track('ProductIntent',{destination:'repeat-revenue-system'})});
+}
+function n(id){return Math.max(0,Number(document.getElementById(id).value||0))}
+function money(x){return '$'+Math.round(x).toLocaleString()}
+function calc(){
+ const customers=n('customers'),ticket=n('ticket'),current=Math.min(100,n('current')),target=Math.min(100,n('target')),visits=Math.max(1,n('visits')),months=Math.max(1,n('months'));
+ const gap=Math.max(0,target-current)/100;
+ const addCustomers=customers*gap*(months/12);
+ const revenue=addCustomers*ticket*visits;
+ document.getElementById('rCustomers').textContent=Math.round(addCustomers).toLocaleString();
+ document.getElementById('rRevenue').textContent=money(revenue);
+ document.getElementById('rMonthly').textContent=money(revenue/months);
+ document.getElementById('out').classList.remove('hidden');document.getElementById('cta').classList.remove('hidden');
+ track('CalculatorCompleted',{additional_customers:Math.round(addCustomers),estimated_revenue:Math.round(revenue),months:months});
+}
+</script></body></html>
