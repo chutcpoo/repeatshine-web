@@ -3,6 +3,8 @@ const ALLOWED_EVENTS = new Set([
   'CalculatorStarted',
   'CalculatorCompleted',
   'ProductIntent',
+  'QualifiedProblemSession',
+  'QualifiedProblemLead',
 ]);
 
 function clean(value, max = 180) {
