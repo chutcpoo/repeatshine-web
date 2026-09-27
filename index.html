@@ -119,6 +119,9 @@ function track(name,params){
     utm_campaign:qs.get('utm_campaign')||'',
     utm_content:qs.get('utm_content')||'',
     utm_term:qs.get('utm_term')||'',
+    problem:qs.get('problem')||qs.get('rs_problem')||'',
+    creative:qs.get('creative')||qs.get('rs_creative')||'',
+    internal_test:qs.get('rs_test')==='1'||qs.get('internal_test')==='1',
     data:params
   };
   fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(function(){});
@@ -141,7 +144,7 @@ let qualifiedProblemSessionTracked=false;
 const productLink=document.getElementById('productLink');
 if(productLink){
   const qs=new URLSearchParams(location.search);
-  const attributionKeys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid','msclkid','ttclid'];
+  const attributionKeys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','problem','creative','rs_problem','rs_creative','rs_test','fbclid','gclid','msclkid','ttclid'];
   const out=new URL(productLink.href);
   attributionKeys.forEach(function(k){if(qs.get(k))out.searchParams.set(k,qs.get(k))});
   if(!out.searchParams.get('utm_source'))out.searchParams.set('utm_source','repeatshine_calculator');
@@ -151,9 +154,6 @@ if(productLink){
   productLink.href=out.toString();
   productLink.addEventListener('click',function(){
     track('ProductIntent',Object.assign({destination:'repeat-revenue-system',funnel_stage:'ProductIntent'},lastCalcResult||{}));
-    if(lastCalcResult&&lastCalcResult.is_qualified_problem){
-      track('QualifiedProblemLead',Object.assign({destination:'repeat-revenue-system',problem_type:'repeat_customer_gap',funnel_stage:'QualifiedProblemLead'},lastCalcResult));
-    }
   });
 }
 function n(id){return Math.max(0,Number(document.getElementById(id).value||0))}
