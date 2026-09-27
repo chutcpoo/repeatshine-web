@@ -36,7 +36,7 @@ export default function handler(req, res) {
     utm_term: clean(body.utm_term),
     problem: clean(body.problem),
     creative: clean(body.creative),
-    internal_test: body.internal_test === true,
+    internal_test: body.internal_test === true || body.internal_test === 'true' || body.internal_test === '1',
     data,
   }));
 
