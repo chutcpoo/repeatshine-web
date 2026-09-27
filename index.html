@@ -136,6 +136,7 @@ document.querySelectorAll('input').forEach(function(el){
   })
 });
 
+let lastCalcResult=null;
 const productLink=document.getElementById('productLink');
 if(productLink){
   const qs=new URLSearchParams(location.search);
@@ -148,7 +149,7 @@ if(productLink){
   if(!out.searchParams.get('utm_content'))out.searchParams.set('utm_content','calculator_result_cta');
   productLink.href=out.toString();
   productLink.addEventListener('click',function(){
-    track('ProductIntent',{destination:'repeat-revenue-system',funnel_stage:'ProductIntent'});
+    track('ProductIntent',Object.assign({destination:'repeat-revenue-system',funnel_stage:'ProductIntent'},lastCalcResult||{}));
   });
 }
 function n(id){return Math.max(0,Number(document.getElementById(id).value||0))}
@@ -161,6 +162,7 @@ function calc(){
  document.getElementById('rCustomers').textContent=Math.round(addCustomers).toLocaleString();
  document.getElementById('rRevenue').textContent=money(revenue);
  document.getElementById('rMonthly').textContent=money(revenue/months);
+ lastCalcResult={estimated_revenue:Math.round(revenue),additional_customers:Math.round(addCustomers),months:months};
  document.getElementById('out').classList.remove('hidden');document.getElementById('cta').classList.remove('hidden');
  track('CalculatorCompleted',{additional_customers:Math.round(addCustomers),estimated_revenue:Math.round(revenue),months:months,funnel_stage:'CalculatorCompleted'});
 }
