@@ -151,7 +151,8 @@ if(productLink){
   if(!out.searchParams.get('utm_medium'))out.searchParams.set('utm_medium','owned_tool');
   if(!out.searchParams.get('utm_campaign'))out.searchParams.set('utm_campaign','repeat_revenue_calculator');
   if(!out.searchParams.get('utm_content'))out.searchParams.set('utm_content','calculator_result_cta');
-  out.searchParams.set('rs_sid',funnelSessionId);\n  productLink.href=out.toString();
+  out.searchParams.set('rs_sid',funnelSessionId);
+  productLink.href=out.toString();
   productLink.addEventListener('click',function(){
     track('ProductIntent',Object.assign({destination:'repeat-revenue-system',funnel_stage:'ProductIntent'},lastCalcResult||{}));
   });
@@ -167,7 +168,12 @@ function calc(){
  document.getElementById('rRevenue').textContent=money(revenue);
  document.getElementById('rMonthly').textContent=money(revenue/months);
  const isQualifiedProblem=customers>0&&ticket>0&&target>current&&addCustomers>0&&revenue>0;
- lastCalcResult={estimated_revenue:Math.round(revenue),additional_customers:Math.round(addCustomers),months:months,is_qualified_problem:isQualifiedProblem,problem_type:'repeat_customer_gap'};\n if(productLink){\n   const out=new URL(productLink.href);\n   if(isQualifiedProblem)out.searchParams.set('rs_qualified','1');else out.searchParams.delete('rs_qualified');\n   productLink.href=out.toString();\n }
+ lastCalcResult={estimated_revenue:Math.round(revenue),additional_customers:Math.round(addCustomers),months:months,is_qualified_problem:isQualifiedProblem,problem_type:'repeat_customer_gap'};
+ if(productLink){
+   const out=new URL(productLink.href);
+   if(isQualifiedProblem)out.searchParams.set('rs_qualified','1');else out.searchParams.delete('rs_qualified');
+   productLink.href=out.toString();
+ }
  document.getElementById('out').classList.remove('hidden');document.getElementById('cta').classList.remove('hidden');
  track('CalculatorCompleted',{additional_customers:Math.round(addCustomers),estimated_revenue:Math.round(revenue),months:months,is_qualified_problem:isQualifiedProblem,problem_type:'repeat_customer_gap',funnel_stage:'CalculatorCompleted'});
  const qs=new URLSearchParams(location.search);
