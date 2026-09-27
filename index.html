@@ -137,6 +137,7 @@ document.querySelectorAll('input').forEach(function(el){
 });
 
 let lastCalcResult=null;
+let qualifiedProblemSessionTracked=false;
 const productLink=document.getElementById('productLink');
 if(productLink){
   const qs=new URLSearchParams(location.search);
@@ -150,6 +151,9 @@ if(productLink){
   productLink.href=out.toString();
   productLink.addEventListener('click',function(){
     track('ProductIntent',Object.assign({destination:'repeat-revenue-system',funnel_stage:'ProductIntent'},lastCalcResult||{}));
+    if(lastCalcResult&&lastCalcResult.is_qualified_problem){
+      track('QualifiedProblemLead',Object.assign({destination:'repeat-revenue-system',problem_type:'repeat_customer_gap',funnel_stage:'QualifiedProblemLead'},lastCalcResult));
+    }
   });
 }
 function n(id){return Math.max(0,Number(document.getElementById(id).value||0))}
@@ -162,8 +166,13 @@ function calc(){
  document.getElementById('rCustomers').textContent=Math.round(addCustomers).toLocaleString();
  document.getElementById('rRevenue').textContent=money(revenue);
  document.getElementById('rMonthly').textContent=money(revenue/months);
- lastCalcResult={estimated_revenue:Math.round(revenue),additional_customers:Math.round(addCustomers),months:months};
+ const isQualifiedProblem=customers>0&&ticket>0&&target>current&&addCustomers>0&&revenue>0;
+ lastCalcResult={estimated_revenue:Math.round(revenue),additional_customers:Math.round(addCustomers),months:months,is_qualified_problem:isQualifiedProblem,problem_type:'repeat_customer_gap'};
  document.getElementById('out').classList.remove('hidden');document.getElementById('cta').classList.remove('hidden');
- track('CalculatorCompleted',{additional_customers:Math.round(addCustomers),estimated_revenue:Math.round(revenue),months:months,funnel_stage:'CalculatorCompleted'});
+ track('CalculatorCompleted',{additional_customers:Math.round(addCustomers),estimated_revenue:Math.round(revenue),months:months,is_qualified_problem:isQualifiedProblem,problem_type:'repeat_customer_gap',funnel_stage:'CalculatorCompleted'});
+ if(isQualifiedProblem&&!qualifiedProblemSessionTracked){
+   qualifiedProblemSessionTracked=true;
+   track('QualifiedProblemSession',Object.assign({funnel_stage:'QualifiedProblemSession'},lastCalcResult));
+ }
 }
 </script></body></html>
