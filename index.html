@@ -170,7 +170,9 @@ function calc(){
  lastCalcResult={estimated_revenue:Math.round(revenue),additional_customers:Math.round(addCustomers),months:months,is_qualified_problem:isQualifiedProblem,problem_type:'repeat_customer_gap'};
  document.getElementById('out').classList.remove('hidden');document.getElementById('cta').classList.remove('hidden');
  track('CalculatorCompleted',{additional_customers:Math.round(addCustomers),estimated_revenue:Math.round(revenue),months:months,is_qualified_problem:isQualifiedProblem,problem_type:'repeat_customer_gap',funnel_stage:'CalculatorCompleted'});
- if(isQualifiedProblem&&!qualifiedProblemSessionTracked){
+ const qs=new URLSearchParams(location.search);
+ const isInternalTest=qs.get('rs_test')==='1'||qs.get('internal_test')==='1';
+ if(isQualifiedProblem&&!isInternalTest&&!qualifiedProblemSessionTracked){
    qualifiedProblemSessionTracked=true;
    track('QualifiedProblemSession',Object.assign({funnel_stage:'QualifiedProblemSession'},lastCalcResult));
  }
