@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Mobile Detailing Pricing & Profit Calculator | RepeatShine</title>
+<meta name="description" content="Calculate mobile detailing job cost, recommended price, profit and margin from labor, chemicals, travel and add-ons.">
+<link rel="canonical" href="https://calculator.repeatshine.com/pricing/">
+<style>:root{--bg:#f4f6f8;--card:#fff;--ink:#202225;--muted:#667085;--line:#dfe3e8;--accent:#2f6fed}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}main{max-width:880px;margin:auto;padding:28px 18px}.hero{text-align:center}.hero p{color:var(--muted)}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin:16px 0}.grid,.results{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}input,select{width:100%;padding:12px;border:1px solid #cfd5dd;border-radius:9px;font-size:16px}button{width:100%;padding:13px;border:0;border-radius:9px;background:var(--accent);color:#fff;font-weight:800;font-size:16px;margin-top:16px}.metric{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:15px}.metric b{display:block;font-size:24px}.metric span,.small{font-size:12px;color:var(--muted)}.hidden{display:none}@media(max-width:680px){.grid,.results{grid-template-columns:1fr}}</style></head>
+<body><main><p><a href="/">← All free tools</a></p><section class="hero"><b>REPEATSHINE FREE TOOL</b><h1>Mobile Detailing Pricing & Profit Calculator</h1><p>Know the real cost of a detailing job before you quote it.</p></section>
+<section class="card"><div class="grid">
+<div><label>Labor hours</label><input id="hours" type="number" min="0" step=".25" value="3"></div>
+<div><label>Labor cost per hour ($)</label><input id="labor" type="number" min="0" step="1" value="30"></div>
+<div><label>Chemicals & supplies ($)</label><input id="chem" type="number" min="0" step="1" value="18"></div>
+<div><label>Travel / mileage cost ($)</label><input id="travel" type="number" min="0" step="1" value="12"></div>
+<div><label>Other direct costs ($)</label><input id="other" type="number" min="0" step="1" value="0"></div>
+<div><label>Target profit margin (%)</label><input id="margin" type="number" min="1" max="90" step="1" value="40"></div>
+</div><button onclick="calc()">Calculate My Price & Profit</button></section>
+<section id="out" class="card hidden"><h2>Your pricing snapshot</h2><div class="results">
+<div class="metric"><span>Total job cost</span><b id="cost">$0</b></div><div class="metric"><span>Recommended price</span><b id="price">$0</b></div>
+<div class="metric"><span>Estimated profit</span><b id="profit">$0</b></div><div class="metric"><span>Target margin</span><b id="pm">0%</b></div></div>
+<p class="small">Planning estimate only. Review your actual overhead, taxes and market conditions before quoting a customer.</p></section>
+<section class="card"><h2>Next: turn this into a repeatable pricing system</h2><p>RepeatShine is developing a mobile-detailing pricing and profit workflow built around real job costs, margins and consistent quoting.</p></section>
+<script>
+function getSessionId(){const k='repeatshine_funnel_session';try{let id=sessionStorage.getItem(k);if(!id){id=(crypto&&crypto.randomUUID)?crypto.randomUUID():('rs_'+Date.now());sessionStorage.setItem(k,id)}return id}catch(e){return 'session_unavailable'}}
+const funnelSessionId=getSessionId();
+function track(name,params){params=params||{};window.dataLayer=window.dataLayer||[];window.dataLayer.push(Object.assign({event:name},params));if(typeof window.fbq==='function')window.fbq('trackCustom',name,params);const q=new URLSearchParams(location.search);fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({event:name,session_id:funnelSessionId,page:location.pathname,referrer:document.referrer||'',utm_source:q.get('utm_source')||'',utm_medium:q.get('utm_medium')||'',utm_campaign:q.get('utm_campaign')||'',utm_content:q.get('utm_content')||'',utm_term:q.get('utm_term')||'',problem:q.get('problem')||'',creative:q.get('creative')||'',internal_test:q.get('rs_test')==='1'||q.get('internal_test')==='1',data:params}),keepalive:true}).catch(()=>{})}
+track('PageView',{page_type:'pricing_profit_calculator',funnel_stage:'LandingView'});let started=false;document.querySelectorAll('input').forEach(el=>el.addEventListener('focus',()=>{if(!started){started=true;track('CalculatorStarted',{tool:'pricing_profit',funnel_stage:'CalculatorStarted'})}}));
+function n(id){return Math.max(0,Number(document.getElementById(id).value||0))}function money(x){return '$'+x.toFixed(2)}
+function calc(){const total=n('hours')*n('labor')+n('chem')+n('travel')+n('other');const m=Math.min(.9,n('margin')/100);const price=m<1?total/(1-m):total;const profit=price-total;document.getElementById('cost').textContent=money(total);document.getElementById('price').textContent=money(price);document.getElementById('profit').textContent=money(profit);document.getElementById('pm').textContent=Math.round(m*100)+'%';document.getElementById('out').classList.remove('hidden');track('CalculatorCompleted',{tool:'pricing_profit',job_cost:Math.round(total*100)/100,recommended_price:Math.round(price*100)/100,estimated_profit:Math.round(profit*100)/100,target_margin:Math.round(m*100),funnel_stage:'CalculatorCompleted'})}
+</script></main></body></html>
