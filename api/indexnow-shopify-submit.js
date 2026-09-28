@@ -19,7 +19,7 @@ export default async function handler(req,res){
       body:JSON.stringify({
         host:HOST,
         key:KEY,
-        keyLocation:'https://www.repeatshine.com/cdn/shop/files/'+KEY+'.txt',
+        keyLocation:'https://www.repeatshine.com/'+KEY+'.txt',
         urlList:URLS
       })
     });
