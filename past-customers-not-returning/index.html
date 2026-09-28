@@ -66,6 +66,16 @@ h2{margin-top:0}li,p{line-height:1.65}.steps li{margin:0 0 14px}.cta{background:
  const key='repeatshine_funnel_session';
  let sid='session_unavailable';
  try{sid=sessionStorage.getItem(key)||((crypto&&crypto.randomUUID)?crypto.randomUUID():'rs_'+Date.now()+'_'+Math.random().toString(36).slice(2,10));sessionStorage.setItem(key,sid)}catch(e){}
+ const calcLink=document.getElementById('calcLink');
+ if(calcLink){
+   const outUrl=new URL(calcLink.href);
+   const pass=['utm_source','utm_medium','utm_campaign','utm_term','problem','creative','rs_problem','rs_creative','fbclid','gclid','msclkid','ttclid'];
+   pass.forEach(function(k){if(qs.get(k))outUrl.searchParams.set(k,qs.get(k))});
+   if(qs.get('utm_content'))outUrl.searchParams.set('utm_content',qs.get('utm_content')+'_to_calculator');
+   else outUrl.searchParams.set('utm_content','problem_page_to_calculator');
+   if(!outUrl.searchParams.get('problem'))outUrl.searchParams.set('problem',problem);
+   calcLink.href=outUrl.toString();
+ }
  const payload={event:'PageView',session_id:sid,page:location.pathname,referrer:document.referrer||'',utm_source:qs.get('utm_source')||'repeatshine_problem_page',utm_medium:qs.get('utm_medium')||'owned_content',utm_campaign:qs.get('utm_campaign')||problem,utm_content:qs.get('utm_content')||'problem_page',utm_term:qs.get('utm_term')||'',problem:problem,creative:qs.get('creative')||'problem_page',internal_test:qs.get('rs_test')==='1'||qs.get('internal_test')==='1',data:{page_type:'problem_resource',funnel_stage:'LandingView',problem_type:problem}};
  fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(function(){});
 })();
