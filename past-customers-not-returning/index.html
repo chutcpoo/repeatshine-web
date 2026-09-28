@@ -76,17 +76,6 @@ h2{margin-top:0}li,p{line-height:1.65}.steps li{margin:0 0 14px}.cta{background:
    if(!outUrl.searchParams.get('problem'))outUrl.searchParams.set('problem',problem);
    calcLink.href=outUrl.toString();
  }
- const calcLink=document.getElementById('calcLink');
- if(calcLink){
-   try{
-     const out=new URL(calcLink.href);
-     ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','creative'].forEach(function(k){
-       if(qs.get(k)) out.searchParams.set(k,qs.get(k));
-     });
-     out.searchParams.set('problem',qs.get('problem')||problem);
-     calcLink.href=out.toString();
-   }catch(e){}
- }
  const payload={event:'PageView',session_id:sid,page:location.pathname,referrer:document.referrer||'',utm_source:qs.get('utm_source')||'repeatshine_problem_page',utm_medium:qs.get('utm_medium')||'owned_content',utm_campaign:qs.get('utm_campaign')||problem,utm_content:qs.get('utm_content')||'problem_page',utm_term:qs.get('utm_term')||'',problem:problem,creative:qs.get('creative')||'problem_page',internal_test:qs.get('rs_test')==='1'||qs.get('internal_test')==='1',data:{page_type:'problem_resource',funnel_stage:'LandingView',problem_type:problem}};
  fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(function(){});
 })();
