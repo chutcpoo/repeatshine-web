@@ -11,12 +11,28 @@ function clean(value, max = 180) {
   return typeof value === 'string' ? value.slice(0, max) : '';
 }
 
+function parseBody(req) {
+  if (req.body && typeof req.body === 'object' && !Buffer.isBuffer(req.body)) {
+    return req.body;
+  }
+  const raw = Buffer.isBuffer(req.body) ? req.body.toString('utf8') : (typeof req.body === 'string' ? req.body : '');
+  if (!raw) return {};
+  const contentType = String(req.headers['content-type'] || '').toLowerCase();
+  if (contentType.includes('application/json')) {
+    try { return JSON.parse(raw); } catch (_) { return {}; }
+  }
+  if (contentType.includes('application/x-www-form-urlencoded')) {
+    return Object.fromEntries(new URLSearchParams(raw));
+  }
+  try { return JSON.parse(raw); } catch (_) { return {}; }
+}
+
 export default function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ ok: false });
   }
 
-  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  const body = parseBody(req);
   if (!ALLOWED_EVENTS.has(body.event)) {
     return res.status(400).json({ ok: false });
   }
